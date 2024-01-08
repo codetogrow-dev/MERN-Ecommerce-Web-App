@@ -18,6 +18,9 @@ const Register = () => {
   const [password, setPassword] = useState("");
   const [picture, setPicture] = useState("");
   const [isAdmin, setIsAdmin] = useState(false);
+  const cloudName = import.meta.env.VITE_REACT_CLOUD_NAME;
+  const uploadPreset = import.meta.env.VITE_REACT_UPLOAD_PRESET;
+  const apiBaseUrl = import.meta.env.VITE_REACT_API_BASE_URL;
   const postDetails = (pic) => {
     if (
       pic.type === "image/jpeg" ||
@@ -26,9 +29,9 @@ const Register = () => {
     ) {
       const data = new FormData();
       data.append("file", pic);
-      data.append("upload_preset", "ecommerce-app");
-      data.append("cloud_name", "dtptl3jmj");
-      fetch("https://api.cloudinary.com/v1_1/dtptl3jmj/image/upload", {
+      data.append("upload_preset", uploadPreset);
+      data.append("cloud_name", cloudName);
+      fetch(apiBaseUrl, {
         method: "post",
         body: data,
       })
