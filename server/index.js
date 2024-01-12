@@ -1,6 +1,7 @@
 import express from "express";
 import bodyParser from "body-parser"   // import body parser
 import userRouter from "./routes/userRoutes.js";
+import adminRouter from "./routes/adminRoutes.js";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
 import cors from "cors";
@@ -16,6 +17,7 @@ mongoose.connection.on("connected", () => {
 })
 
 app.use("/api/user", userRouter)
+app.use("/api/admin", adminRouter)
 
 
 // signup   http://localhost:5000/api/user/signup
