@@ -1,7 +1,5 @@
 import React from "react";
-// import { useTheme } from "../context/ThemeContext";
 const AuthenticationNavbar = ({ toggleTheme, isDarkMode }) => {
-  // const { toggleTheme, isDarkMode } = useTheme();
   return (
     <div>
       <div

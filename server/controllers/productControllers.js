@@ -1,5 +1,6 @@
 import Product from "../models/productModel.js"
-import mongoose from "mongoose"
+import mongoose from "mongoose";
+import User from "../models/userModel.js"
 export const createProduct = async (req, res) => {
     try {
         const { title, description, picture, price, category, vendor, stockQuantity, shippingType, offer } = req.body
@@ -9,7 +10,13 @@ export const createProduct = async (req, res) => {
             return res.status(400).json({ message: "All fields are mandatory to be filled!!" })
 
         }
-
+        const findUser = await User.findById(adminId);
+        if (!findUser) {
+            return res.status(404).json({ message: "User not found!!" })
+        }
+        if (!findUser.isAdmin) {
+            return res.status(400).json({ message: "Only admin can Publish Products" })
+        }
         const createdBy = adminId;
 
 
@@ -102,7 +109,14 @@ export const listProducts = async (req, res) => {
             },
             {
                 $project: {
-                    createdByUser: 0
+                    createdByUser: 0,
+                    "createdBy.password": 0,
+                    "createdBy.resetPasswordToken": 0,
+                    "createdBy.resetPasswordExpires": 0,
+                    "createdBy.__v": 0,
+                    createdAt: 0,
+                    updatedAt: 0,
+                    __v: 0
                 }
             }
         ])

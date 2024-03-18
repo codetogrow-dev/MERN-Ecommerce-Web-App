@@ -1,0 +1,40 @@
+import React from "react";
+import Skeleton from "react-loading-skeleton";
+const DashBoardSkeleton = ({ cards }) => {
+  return (
+   
+        <div
+          className={
+            "w-full min-h-screen bg-slate-900 text-white px-[5rem] py-[2rem] "
+          }
+        >
+          <div
+            className={"flex justify-center items-center flex-col min-h-[640px]"}
+          >
+           { 
+            Array(cards)
+      .fill(0)
+      .map((_, i) => (
+        <div
+        key={i}
+        className={`border border-slate-800 my-2 w-2/5 py-2 px-2`}>
+              <h2 className="text-xl font-bold">
+                {" "}
+                <Skeleton className="h-[25px]" />
+              </h2>
+              <h4 className="font-thin text-lg mt-2">
+                {" "}
+                <Skeleton />
+                <Skeleton />
+                <Skeleton className="w-2/6" />
+              </h4>
+            </div>
+      ))}
+          
+          </div>
+        </div>
+    
+  );
+};
+
+export default DashBoardSkeleton;

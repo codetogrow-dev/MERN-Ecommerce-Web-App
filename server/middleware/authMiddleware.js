@@ -1,31 +1,26 @@
-import User from "../models/userModel.js";
+import User from "../models/userModel.js"
 import jwt from "jsonwebtoken";
-const protect = async (req, res, next) => {
-    let token;
 
-
-
-    let authToken = req.headers.authorization || req.headers.Authorization;
-
-    if (!authToken) {
-        return next();
-    }
-
+const verifyJWT = async (req, res, next) => {
     try {
+        const token = req.cookies?.accessToken || req.headers?.Authorization?.split(" ")[1] || req.headers?.authorization?.split(" ")[1]
+        if (!token) {
+            return res.status(401).json("Unauthorized request")
+        }
 
-        token = authToken.split(" ")[1]   // token =  "Bearer egdwedweuidweuidnwedinwejdnwdnweidnwidwui"
+        const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET)
 
-        const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
-        req.user = await User.findById(decodedToken._id).select("-password");
-        next();
+        const user = await User.findById(decodedToken?._id).select("-password -refreshToken")
 
+        if (!user) {
+
+            return res.status(401).json("Invalid Access Token")
+        }
+
+        req.user = user;
+        next()
     } catch (error) {
-        res.status(400).json({ message: error.message })
+        res.status(401).json({ message: error?.message || "Invalid access token" })
     }
-
-    if (!token) {
-        return res.status(400).json({ message: "User is not Authorized " })
-    }
-
 }
-export default protect;
+export default verifyJWT;

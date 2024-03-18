@@ -1,74 +1,63 @@
 import User from "../models/userModel.js";
 import validator from "validator";
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
+import { generateAccessAndRefreshTokens } from "../utils/signToken.js";
 import crypto from "crypto";
 import nodemailer from "nodemailer";
-let createToken = (_id, fullname, username, email, picture, isAdmin) => {
-    const payload = {
-        _id,
-        fullname,
-        username,
-        email,
-        picture,
-        isAdmin
-    }
-    return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "10d" })
-}
-
+import { uploadOnCloudinary } from "../utils/cloudinary.js";
 export const signup = async (req, res) => {
 
-    const { fullname, email, username, password, picture, isAdmin } = req.body
-
-    if (!fullname || !email || !username || !password) {
-        return res.status(400).json({ message: "Please fill all the fields" })
-    }
-
-    const existingUser = await User.findOne({ email })
-
-    if (existingUser) {
-        return res.status(400).json({ message: "email already exists" })
-    }
-
-    const findByUsername = await User.findOne({ username })
-    if (findByUsername) {
-        return res.status(400).json({ message: "username already exists" })
-    }
-    if (!validator.isEmail(email)) {
-        return res.status(400).json({ message: "Email is not a valid email " })
-    }
-
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
-
+    const { fullname, email, username, password, isAdmin } = req.body
     try {
+        if (!fullname || !email || !username || !password) {
+            return res.status(400).json({ message: "Please fill all the fields" })
+        }
+
+        const existingUser = await User.findOne({ email })
+
+        if (existingUser) {
+            return res.status(400).json({ message: "email already exists" })
+        }
+        const pictureLocalPath = req.file.path;
+
+        if (!pictureLocalPath) {
+            return res.status(400).json({ message: "file path not found" })
+        }
+        const picture = await uploadOnCloudinary(pictureLocalPath);
+        const findByUsername = await User.findOne({ username })
+        if (findByUsername) {
+            return res.status(400).json({ message: "username already exists" })
+        }
+        if (!validator.isEmail(email)) {
+            return res.status(400).json({ message: "Email is not a valid email " })
+        }
+
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+
+
         const user = await User.create({
 
             fullname,
             email,
             username,
             password: hashedPassword,
-            picture,
+            picture: picture?.url || "",
             isAdmin
-
-
         })
 
         await user.save()
+        const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(user._id, user.isAdmin);
+        const options = {
+            httpOnly: true,
+            secure: true,
 
-        res.status(201).json({
-            _id: user._id,
-
-            fullname: user.fullname,
-            email: user.email,
-            username: user.username,
-            password: user.password,
-            picture: user.picture,
-            isAdmin: user.isAdmin,
-            token: createToken(user._id, user.fullname, user.email, user.picture, user.isAdmin),
-            message: "user Successfully Registered",
-        })
-
+        };
+        return res
+            .status(201)
+            .cookie("accessToken", accessToken, options)
+            .cookie("refreshToken", refreshToken, options)
+            .json({ user, message: 'User created successfully', accessToken, refreshToken });
     } catch (error) {
         res.status(500).json({ message: error.message })
     }
@@ -94,17 +83,17 @@ export const login = async (req, res) => {
         if (!matchedPassword) {
             return res.status(400).json({ message: "Incorrect Password" })
         }
-        res.status(201).json({
-            _id: user._id,
+        const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(user._id, user.isAdmin);
+        const options = {
+            httpOnly: true,
+            secure: true,
 
-            fullname: user.fullname,
-            email: user.email,
-            password: user.password,
-            picture: user.picture,
-            isAdmin: user.isAdmin,
-            token: createToken(user._id, user.fullname, user.email, user.picture, user.isAdmin),
-            message: "user Successfully loggedIn",
-        })
+        };
+        return res
+            .status(201)
+            .cookie("accessToken", accessToken, options)
+            .cookie("refreshToken", refreshToken, options)
+            .json({ user, message: 'User created successfully', accessToken, refreshToken });
     } catch (error) {
         res.status(500).json({ message: error.message })
     }
@@ -142,7 +131,7 @@ export const forgetPassword = async (req, res) => {
         }
 
         const OTP = crypto.randomBytes(12).toString("hex");
-        const expiry = Date.now() + 3600000                 // 1hour = 60 mintues , 1 minute = 60sec + 1sec =  1000msec        60*60*10000  1hour = 3600000 
+        const expiry = Date.now() + 3600000
         user.resetPasswordToken = OTP;
         user.resetPasswordExpires = expiry;
 

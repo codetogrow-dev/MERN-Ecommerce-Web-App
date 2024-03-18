@@ -1,0 +1,78 @@
+import axios from "axios";
+import React, { useState } from "react";
+import { useQuery } from "react-query";
+import DashBoardSkeleton from "../../components/DashBoardSkeleton";
+const Dashboard = () => {
+  const [postPerPage] = useState(4);
+  const [page, setPage] = useState(1);
+  const fetchPosts = () => {
+    return axios.get("https://jsonplaceholder.typicode.com/posts");
+  };
+  let { isLoading, data, isError, error } = useQuery(
+    "fetch-posts",
+    fetchPosts
+  );
+
+  const totalPages = Math.ceil(data?.data.length / postPerPage);
+  const startIndex = (page - 1) * postPerPage;
+  const endIndex = startIndex + postPerPage;
+  const paginatedData = data?.data.slice(startIndex, endIndex);
+  const handlePageChange = (newPage) => {
+    setPage(newPage);
+  };
+
+  if (isError) {
+    return <div>{error.message}</div>;
+  }
+
+  return (
+    <>
+      {isLoading ? (
+        <DashBoardSkeleton cards={4} />
+      ) : (
+        <div
+          className={
+            "w-full min-h-screen bg-slate-900 text-white px-[5rem] py-[2rem] "
+          }
+        >
+          <div
+            className={
+              "flex justify-center items-center flex-col min-h-[640px]"
+            }
+          >
+            {paginatedData.map((item, index) => (
+              <div
+                key={index}
+                className={`border border-slate-800 my-2 w-2/5 py-2 px-2`}
+              >
+                <h2 className="text-xl font-bold"> Title : {item.title}</h2>
+                <h4 className="font-thin text-lg"> Body : {item.body}</h4>
+              </div>
+            ))}
+          </div>
+          <div className="flex items-center justify-center mt-4">
+            <button
+              className="mx-2 px-4 py-2 bg-blue-500 text-white rounded-md"
+              onClick={() => handlePageChange(page - 1)}
+              disabled={page === 1}
+            >
+              Previous
+            </button>
+            <span className="mx-2 text-lg">
+              Page {page} of {totalPages}
+            </span>
+            <button
+              className="mx-2 px-4 py-2 bg-blue-500 text-white rounded-md"
+              onClick={() => handlePageChange(page + 1)}
+              disabled={page === totalPages}
+            >
+              Next
+            </button>
+          </div>
+        </div>
+      )}
+    </>
+  );
+};
+
+export default Dashboard;

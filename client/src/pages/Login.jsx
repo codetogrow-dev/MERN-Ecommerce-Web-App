@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "../utils/AxiosConfiq";
 import { useMutation } from "react-query";
 import { toast } from "react-toastify";
+import { useUser } from "../context/UserContext";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -12,7 +13,7 @@ const Login = () => {
   const label = isDarkMode
     ? "block text-sm font-semibold text-slate-400  mb-2"
     : "block text-sm font-semibold text-gray-600  mb-2";
-
+  const { setUser } = useUser();
   const navigate = useNavigate();
 
   const login = async (userData) => {
@@ -21,6 +22,8 @@ const Login = () => {
       const token = data.token;
       JSON.stringify(localStorage.setItem("token", token));
       if (data) {
+        console.log(data);
+        setUser(data);
         toast.success("User logged in Successfully", {
           position: "top-center",
           autoClose: 3000,
@@ -34,20 +37,23 @@ const Login = () => {
         setEmail("");
         setPassword("");
       }
-    } catch (error) {
-      if (error.response) {
-        console.log(error);
-        toast.error(`${error.response.data.message}`, {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: `${isDarkMode ? "dark" : "light"}`,
-        });
+      if (data?.user?.isAdmin) {
+        navigate("/admin/dashboard");
       }
+      if (!data?.user?.isAdmin) {
+        navigate("/customer");
+      }
+    } catch (error) {
+      toast.error(`${error?.response?.data?.message || "Network Error"} `, {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: `${isDarkMode ? "dark" : "light"}`,
+      });
     }
   };
 
@@ -94,7 +100,7 @@ const Login = () => {
             name="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full px-4 py-2 border rounded-md focus:outline-none focus:border-blue-500"
+            className="w-full px-4 py-2 bg-transparent border-slate-600 border rounded-md focus:outline-none focus:border-blue-500"
             required
           />
         </div>
@@ -108,7 +114,7 @@ const Login = () => {
             name="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full px-4 py-2 border rounded-md focus:outline-none focus:border-blue-500"
+            className="w-full px-4 py-2 bg-transparent border-slate-600  border rounded-md focus:outline-none focus:border-blue-500"
             required
           />
         </div>
