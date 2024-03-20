@@ -1,56 +1,53 @@
 import Product from "../models/productModel.js"
 import mongoose from "mongoose";
 import User from "../models/userModel.js"
-export const createProduct = async (req, res) => {
+import Category from "../models/categoryModel.js";
+import asyncHandler from "express-async-handler";
+import { uploadOnCloudinary } from "../utils/cloudinary.js";
+export const createProduct = asyncHandler(async (req, res) => {
     try {
-        const { title, description, picture, price, category, vendor, stockQuantity, shippingType, offer } = req.body
-        const { adminId } = req.params;
-        if (!title || !description || !price || !picture || !category || !vendor || !stockQuantity) {
+        const { title, description, category, regularPrice, salesPrice, shippingType, deliveryType, vendor, stockQuantity, offer, collections, tags } = req.body;
 
-            return res.status(400).json({ message: "All fields are mandatory to be filled!!" })
-
+        const userId = req.user?._id;
+        if (!userId) {
+            return res.status(404).json({ message: "User not found" });
         }
-        const findUser = await User.findById(adminId);
-        if (!findUser) {
-            return res.status(404).json({ message: "User not found!!" })
+        const findCategory = await Category.findOne({ name: category });
+        if (!findCategory) {
+            return res.status(404).json({ message: "Category not found!!" })
         }
-        if (!findUser.isAdmin) {
-            return res.status(400).json({ message: "Only admin can Publish Products" })
+        const pictureLocalPath = req.file.path;
+
+        if (!pictureLocalPath) {
+            return res.status(400).json({ message: "file path not found" })
         }
-        const createdBy = adminId;
-
-
+        const picture = await uploadOnCloudinary(pictureLocalPath);
         const product = await Product.create({
             title,
             description,
-            picture,
-            price,
-            category,
+            picture: picture?.url || "",
+            category: findCategory?._id,
+            categoryTitle: category,
+            regularPrice,
+            salesPrice,
+            shippingType,
+            deliveryType,
             vendor,
             stockQuantity,
-            shippingType,
             offer,
-
-            publishedDate: new Date().toLocaleString("en-US", {
-                year: "numeric",
-                month: "short",
-                day: "numeric",
-                minute: "numeric",
-                hour: "numeric",
-                hour12: true,
-            }),
-            createdBy,
+            collections,
+            tags,
+            createdBy: userId
         })
-        await product.populate("createdBy", "fullname email picture username")
-        await product.save();
-
-        res.status(201).json({ product, message: "Product Published Successfully" })
-
+        await product.save()
+        if (product) {
+            return res.status(201).json(product);
+        }
     } catch (error) {
-        res.status(500).json({ message: error.message })
-
+        console.log(error);
+        res.status(500).json({ message: error?.message })
     }
-}
+})
 
 export const editProduct = async (req, res) => {
     try {
@@ -89,39 +86,31 @@ export const deleteProduct = async (req, res) => {
 
 export const listProducts = async (req, res) => {
     try {
-        const { adminId } = req.params;
+        const adminId = req.user?._id;
+
         const products = await Product.aggregate([
             {
-                $match: { createdBy: new mongoose.Types.ObjectId(adminId) }
-            },
-            {
-                $lookup: {
-                    from: "users",
-                    localField: "createdBy",
-                    foreignField: "_id",
-                    as: "createdByUser"
+                $match: {
+                    createdBy: adminId
                 }
-            },
-            {
-                $addFields: {
-                    createdBy: { $arrayElemAt: ["$createdByUser", 0] }
-                }
-            },
-            {
+            }, {
                 $project: {
-                    createdByUser: 0,
-                    "createdBy.password": 0,
-                    "createdBy.resetPasswordToken": 0,
-                    "createdBy.resetPasswordExpires": 0,
-                    "createdBy.__v": 0,
-                    createdAt: 0,
-                    updatedAt: 0,
-                    __v: 0
+                    _id: 1,
+                    title: 1,
+                    picture: 1,
+                    salesPrice: 1,
+                    categoryTitle: 1,
+                    tags: 1,
+                    vendor: 1,
+                    createdAt: 1,
                 }
             }
         ])
-        res.status(200).json({ products })
+        if (products.length === 0) {
+            return res.status(404).json({ message: "No Data Found!!" })
+        }
+        res.status(200).json(products)
     } catch (error) {
-        res.status(500).json({ message: error.message })
+        res.status(500).json({ message: error?.message })
     }
 }

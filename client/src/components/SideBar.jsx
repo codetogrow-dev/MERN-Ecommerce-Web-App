@@ -16,6 +16,11 @@ const SideBar = ({ className, setOpenModel, handleCollapse, collapse }) => {
       route: "/admin/add-product",
     },
     {
+      icon: "fa-briefcase",
+      text: "All Products",
+      route: "/admin/all-products",
+    },
+    {
       icon: "fa-user",
       text: "Customers",
       route: "/admin/customers",

@@ -18,7 +18,7 @@ export const signup = async (req, res) => {
         if (existingUser) {
             return res.status(400).json({ message: "email already exists" })
         }
-        const pictureLocalPath = req.file.path;
+        const pictureLocalPath = req.file?.path;
 
         if (!pictureLocalPath) {
             return res.status(400).json({ message: "file path not found" })

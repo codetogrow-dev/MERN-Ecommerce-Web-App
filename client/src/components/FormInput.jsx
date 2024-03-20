@@ -10,6 +10,7 @@ const FormInput = ({
   labelStyles,
   className,
   onKeyDown,
+  required,
 }) => {
   const { isDarkMode } = useTheme();
   return (
@@ -33,7 +34,7 @@ const FormInput = ({
         onChange={handleChange}
         onKeyDown={onKeyDown}
         className="w-full px-4 bg-[#141824]  border-[#21283a91]  py-2 border rounded-lg focus:outline-none focus:border-blue-500"
-        required
+        required={required !== undefined ? required : true}
       />
     </div>
   );

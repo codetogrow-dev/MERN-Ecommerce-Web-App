@@ -3,6 +3,7 @@ import "./App.css";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "react-tooltip/dist/react-tooltip.css";
+import "react-loading-skeleton/dist/skeleton.css";
 import { Toaster } from "react-hot-toast";
 import { useTheme } from "./context/ThemeContext";
 import { Routes, Route } from "react-router-dom";
@@ -18,6 +19,7 @@ import Dashboard from "./pages/admin/Dashboard";
 import AddProduct from "./pages/admin/AddProduct";
 import AllCustomers from "./pages/admin/AllCustomers";
 import AllOrders from "./pages/admin/AllOrders";
+import AllProducts from "./pages/admin/AllProducts";
 function App() {
   const { isDarkMode } = useTheme();
   return (
@@ -34,6 +36,7 @@ function App() {
           <Route path="/admin" element={<AdminLayout />}>
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="add-product" element={<AddProduct />} />
+            <Route path="all-products" element={<AllProducts />} />
             <Route path="customers" element={<AllCustomers />} />
             <Route path="orders" element={<AllOrders />} />
           </Route>

@@ -59,7 +59,7 @@ const AdminHome = () => {
         </thead>
         <tbody>
           {loading
-            ? // Render skeleton loading rows
+            ?  Render skeleton loading rows
               Array.from({ length: 10 }).map((_, index) => (
                 <tr
                   key={index}

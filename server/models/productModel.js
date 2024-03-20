@@ -18,9 +18,25 @@ const productSchema = new mongoose.Schema({
         ref: "Category",
         required: true
     },
-    price: {
+    categoryTitle: {
+        type: String,
+        required: true
+    },
+    regularPrice: {
         type: Number,
         required: true
+    },
+    salesPrice: {
+        type: Number,
+        required: true
+    },
+    shippingType: {
+        type: Boolean,
+        default: false,
+    },
+    deliveryType: {
+        type: String,
+
     },
     vendor: {
         type: String,
@@ -30,18 +46,16 @@ const productSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
-    shippingType: {
-        type: Boolean,
-        required: true,
-        default: false
-    },
     offer: {
         type: Number,
         default: 0
     },
-    publishedDate: {
+    collections: {
         type: String,
-        required: true
+
+    },
+    tags: {
+        type: [String]
     },
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,

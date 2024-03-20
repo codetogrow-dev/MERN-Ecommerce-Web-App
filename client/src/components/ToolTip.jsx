@@ -16,7 +16,7 @@ const ToolTip = ({ children, tooltip }) => {
       {tooltip ? (
         <span
           ref={tooltipRef}
-          className="invisible group-hover:visible opacity-0 group-hover:opacity-100 transition bg-slate-500 text-white px-2 py-1 rounded absolute top-full mt-2 whitespace-nowrap"
+          className="invisible text-sm font-semibold group-hover:visible opacity-0 group-hover:opacity-100 transition bg-slate-500 text-white px-2 py-1 rounded absolute top-full mt-2 whitespace-nowrap"
         >
           {tooltip}
         </span>

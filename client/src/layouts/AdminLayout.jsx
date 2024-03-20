@@ -14,12 +14,12 @@ const AdminLayout = () => {
     }
   };
   return (
-    <div className="text-white relative flex flex-col w-full min-h-screen bg-[#141824]  sm:overflow-hidden  overflow-scroll ">
+    <div className="text-white relative flex flex-col w-full min-h-screen bg-[#141824]   overflow-scroll no-scroll   ">
       <Navbar openModel={openModel} setOpenModel={setOpenModel} />
       <div className={`flex flex-1`}>
         <div
           className={`hidden lg:flex  ${
-            collapse ? "flex-[0.04]" : "flex-[0.17]"
+            collapse ? "flex-[0.04]" : "xl:flex-[0.17] flex-[0.2]"
           }`}
         >
           <SideBar handleCollapse={handleCollapse} collapse={collapse} />
@@ -27,10 +27,12 @@ const AdminLayout = () => {
 
         <div
           style={{
-            height: `${openModel ? "calc(100vh - 69px)" : "0px"}`,
+            height: `${openModel ? "calc(100vh - 66px)" : "0px"}`,
+
+            transform: "-translate-x-32",
             transition: "all .3s ease-linear",
           }}
-          className={`absolute  flex flex-1 lg:hidden top-16 bg-slate-700 w-full text-white`}
+          className={`absolute  flex flex-1 lg:hidden top-16 bg-slate-700 w-[15rem] text-white`}
         >
           {openModel && <SideBar setOpenModel={setOpenModel} />}
         </div>
@@ -39,7 +41,7 @@ const AdminLayout = () => {
       </div>
       <div
         onClick={() => setChatClicked(!chatClicked)}
-        className="absolute bottom-2 lg:bottom-10 right-2 sm:right-4 lg:right-24  "
+        className="absolute bottom-2 lg:bottom-10 right-2 sm:right-4 lg:right-12  "
       >
         {chatClicked ? (
           <div className="border cursor-pointer transition-all duration-300 ease-in-out border-slate-800 rounded-full px-5 py-2 bg-slate-700 flex items-center">
@@ -55,7 +57,7 @@ const AdminLayout = () => {
         )}
       </div>
       {!chatClicked && (
-        <div className="absolute bottom-16 lg:bottom-24 right-3 lg:right-32  transition-transform h-[77vh] w-[23rem]  border  border-transparent rounded-md shadow-4xl bg-slate-800 "></div>
+        <div className="absolute bottom-16 lg:bottom-24 right-3 lg:right-20  transition-transform h-[77vh] w-[23rem]  border  border-transparent rounded-md shadow-4xl bg-slate-800 "></div>
       )}
     </div>
   );
