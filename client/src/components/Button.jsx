@@ -1,13 +1,24 @@
 import React from "react";
 import Spinner from "./Spinner";
 
-const Button = ({ title, className, onClick, loading, type, loadingColor }) => {
+const Button = ({
+  title,
+  className,
+  onClick,
+  loading,
+  type,
+  loadingColor,
+  icon,
+  disabled,
+}) => {
   return (
     <button
+      disabled={disabled}
       type={type}
       onClick={onClick}
-      className={`${className} px-3 py-2 text-sm font-semibold  rounded-md  transition `}
+      className={`${className}  font-semibold  rounded-md  transition flex items-center `}
     >
+      {icon && <i className={`fa-solid ${icon} `}></i>}
       {loading ? <Spinner loadingColor={loadingColor} /> : title}
     </button>
   );

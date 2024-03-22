@@ -1,78 +1,122 @@
-import axios from "axios";
-import React, { useState } from "react";
-import { useQuery } from "react-query";
-import DashBoardSkeleton from "../../components/DashBoardSkeleton";
-const Dashboard = () => {
-  const [postPerPage] = useState(4);
-  const [page, setPage] = useState(1);
-  const fetchPosts = () => {
-    return axios.get("https://jsonplaceholder.typicode.com/posts");
-  };
-  let { isLoading, data, isError, error } = useQuery(
-    "fetch-posts",
-    fetchPosts
-  );
+import React from "react";
+import Slider from "react-slick";
 
-  const totalPages = Math.ceil(data?.data.length / postPerPage);
-  const startIndex = (page - 1) * postPerPage;
-  const endIndex = startIndex + postPerPage;
-  const paginatedData = data?.data.slice(startIndex, endIndex);
-  const handlePageChange = (newPage) => {
-    setPage(newPage);
-  };
-
-  if (isError) {
-    return <div>{error.message}</div>;
-  }
-
+function SampleNextArrow(props) {
+  const { className, style, onClick } = props;
   return (
-    <>
-      {isLoading ? (
-        <DashBoardSkeleton cards={4} />
-      ) : (
-        <div
-          className={
-            "w-full min-h-screen bg-slate-900 text-white px-[5rem] py-[2rem] "
-          }
-        >
-          <div
-            className={
-              "flex justify-center items-center flex-col min-h-[640px]"
-            }
-          >
-            {paginatedData.map((item, index) => (
-              <div
-                key={index}
-                className={`border border-slate-800 my-2 w-2/5 py-2 px-2`}
-              >
-                <h2 className="text-xl font-bold"> Title : {item.title}</h2>
-                <h4 className="font-thin text-lg"> Body : {item.body}</h4>
-              </div>
-            ))}
+    <div
+      className={className}
+      style={{ ...style, display: "block", background: "red" }}
+      onClick={onClick}
+    />
+  );
+}
+
+function SamplePrevArrow(props) {
+  const { className, style, onClick } = props;
+  return (
+    <div
+      className={className}
+      style={{
+        ...style,
+        display: "block",
+        background: "green",
+        fontSize: "2rem",
+      }}
+      onClick={onClick}
+    />
+  );
+}
+const CustomerHome = () => {
+  var settings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 6,
+    slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 1000,
+    cssEase: "linear",
+    initialSlide: 0,
+    nextArrow: <SampleNextArrow />,
+    prevArrow: <SamplePrevArrow />,
+    responsive: [
+      {
+        breakpoint: 1024,
+        settings: {
+          slidesToShow: 3,
+          slidesToScroll: 3,
+          infinite: true,
+          dots: true,
+        },
+      },
+      {
+        breakpoint: 600,
+        settings: {
+          slidesToShow: 2,
+          slidesToScroll: 2,
+          initialSlide: 2,
+        },
+      },
+      {
+        breakpoint: 480,
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1,
+        },
+      },
+    ],
+  };
+  const sliderArray = [
+    {
+      title:
+        "Lorem ipsum dolor sit amet,consectetur adipisicing elit.Enim nemo ex itaque deserunt veritatis perferendis explicabo obcaecati voluptate cumque Possimus et modi doloribus Voluptatibus quia atque omnis adipisci perferendis numquam",
+    },
+    {
+      title:
+        "Lorem ipsum dolor sit amet,consectetur adipisicing elit.Enim nemo ex itaque deserunt veritatis perferendis explicabo obcaecati voluptate cumque Possimus et modi doloribus Voluptatibus quia atque omnis adipisci perferendis numquam",
+    },
+    {
+      title:
+        "Lorem ipsum dolor sit amet,consectetur adipisicing elit.Enim nemo ex itaque deserunt veritatis perferendis explicabo obcaecati voluptate cumque Possimus et modi doloribus Voluptatibus quia atque omnis adipisci perferendis numquam",
+    },
+    {
+      title:
+        "Lorem ipsum dolor sit amet,consectetur adipisicing elit.Enim nemo ex itaque deserunt veritatis perferendis explicabo obcaecati voluptate cumque Possimus et modi doloribus Voluptatibus quia atque omnis adipisci perferendis numquam",
+    },
+    {
+      title:
+        "Lorem ipsum dolor sit amet,consectetur adipisicing elit.Enim nemo ex itaque deserunt veritatis perferendis explicabo obcaecati voluptate cumque Possimus et modi doloribus Voluptatibus quia atque omnis adipisci perferendis numquam",
+    },
+    {
+      title:
+        "Lorem ipsum dolor sit amet,consectetur adipisicing elit.Enim nemo ex itaque deserunt veritatis perferendis explicabo obcaecati voluptate cumque Possimus et modi doloribus Voluptatibus quia atque omnis adipisci perferendis numquam",
+    },
+    {
+      title:
+        "Lorem ipsum dolor sit amet,consectetur adipisicing elit.Enim nemo ex itaque deserunt veritatis perferendis explicabo obcaecati voluptate cumque Possimus et modi doloribus Voluptatibus quia atque omnis adipisci perferendis numquam",
+    },
+    {
+      title:
+        "Lorem ipsum dolor sit amet,consectetur adipisicing elit.Enim nemo ex itaque deserunt veritatis perferendis explicabo obcaecati voluptate cumque Possimus et modi doloribus Voluptatibus quia atque omnis adipisci perferendis numquam",
+    },
+    {
+      title:
+        "Lorem ipsum dolor sit amet,consectetur adipisicing elit.Enim nemo ex itaque deserunt veritatis perferendis explicabo obcaecati voluptate cumque Possimus et modi doloribus Voluptatibus quia atque omnis adipisci perferendis numquam",
+    },
+  ];
+  return (
+    <div className="slider-container overflow-x-hidden flex flex-col justify-center min-h-screen w-full px-5">
+      <Slider {...settings}>
+        {sliderArray.map((item, index) => (
+          <div className="border flex flex-col space-y-4 p-3" key={index}>
+            <h1> Item {index + 1}</h1>
+            <h3>{item.title} </h3>
           </div>
-          <div className="flex items-center justify-center mt-4">
-            <button
-              className="mx-2 px-4 py-2 bg-blue-500 text-white rounded-md"
-              onClick={() => handlePageChange(page - 1)}
-              disabled={page === 1}
-            >
-              Previous
-            </button>
-            <span className="mx-2 text-lg">
-              Page {page} of {totalPages}
-            </span>
-            <button
-              className="mx-2 px-4 py-2 bg-blue-500 text-white rounded-md"
-              onClick={() => handlePageChange(page + 1)}
-              disabled={page === totalPages}
-            >
-              Next
-            </button>
-          </div>
-        </div>
-      )}
-    </>
+        ))}
+      </Slider>
+    </div>
   );
 };
 
-export default Dashboard;
+export default CustomerHome;

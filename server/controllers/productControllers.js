@@ -114,3 +114,30 @@ export const listProducts = async (req, res) => {
         res.status(500).json({ message: error?.message })
     }
 }
+export const getAllProducts = asyncHandler(async (_, res) => {
+    try {
+        const products = await Product.find().sort({ createAt: 1 })
+        if (products.length === 0) {
+            return res.status(404).json({
+                message
+                    : "Products not found!!"
+            })
+        }
+        res.status(200).json(products)
+    } catch (error) {
+        res.status(500).json({ message: error.message })
+    }
+})
+// fetch single product by id 
+export const getSingleProduct = asyncHandler(async (req, res) => {
+    try {
+        const { productId } = req.params;
+        const product = await Product.findById(productId)
+        if (!product) {
+            return res.status(404).json({ message: "product not found" })
+        }
+        res.status(200).json(product)
+    } catch (error) {
+        res.status(500).json({ message: error.message })
+    }
+})

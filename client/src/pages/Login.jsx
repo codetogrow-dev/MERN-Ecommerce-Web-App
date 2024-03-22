@@ -4,7 +4,7 @@ import AuthenticationNavbar from "../components/AuthenticationNavbar";
 import { useNavigate } from "react-router-dom";
 import axios from "../utils/AxiosConfiq";
 import { useMutation } from "react-query";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
 import { useUser } from "../context/UserContext";
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -24,16 +24,7 @@ const Login = () => {
       if (data) {
         console.log(data);
         setUser(data);
-        toast.success("User logged in Successfully", {
-          position: "top-center",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-
-          draggable: true,
-          progress: undefined,
-          theme: `${isDarkMode ? "dark" : "light"}`,
-        });
+        toast.success("Logged In Successful");
         setEmail("");
         setPassword("");
       }
@@ -41,25 +32,17 @@ const Login = () => {
         navigate("/admin/dashboard");
       }
       if (!data?.user?.isAdmin) {
-        navigate("/customer");
+        navigate("/customer/home");
       }
     } catch (error) {
-      toast.error(`${error?.response?.data?.message || "Network Error"} `, {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: `${isDarkMode ? "dark" : "light"}`,
-      });
+      toast.error(`${error?.response?.data?.message || "Network Error"}`);
     }
   };
 
   const { mutate } = useMutation(login);
 
-  const handleSubmit = () => {
+  const handleSubmit = (e) => {
+    e.preventDefault();
     const userData = {
       email,
       password,
@@ -81,7 +64,8 @@ const Login = () => {
     >
       <AuthenticationNavbar toggleTheme={toggleTheme} isDarkMode={isDarkMode} />
 
-      <div
+      <form
+        onSubmit={handleSubmit}
         className={` max-w-md lg:max-w-lg xl:max-w-xl mx-auto mt-8 p-6 ${
           isDarkMode
             ? "bg-slate-700 shadow-slate-800 text-white shadow-md"
@@ -95,6 +79,7 @@ const Login = () => {
             Email
           </label>
           <input
+            title="Email is Required"
             type="email"
             id="email"
             name="email"
@@ -109,6 +94,7 @@ const Login = () => {
             Password
           </label>
           <input
+            title="Password is Required"
             type="password"
             id="password"
             name="password"
@@ -121,7 +107,6 @@ const Login = () => {
         <button
           type="submit"
           className="w-full bg-blue-500 text-white p-3 rounded-md hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue"
-          onClick={handleSubmit}
         >
           Login
         </button>
@@ -143,7 +128,7 @@ const Login = () => {
             Forget Password?
           </p>
         </div>
-      </div>
+      </form>
     </div>
   );
 };

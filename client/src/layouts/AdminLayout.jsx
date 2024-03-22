@@ -57,7 +57,7 @@ const AdminLayout = () => {
         )}
       </div>
       {!chatClicked && (
-        <div className="absolute bottom-16 lg:bottom-24 right-3 lg:right-20  transition-transform h-[77vh] w-[23rem]  border  border-transparent rounded-md shadow-4xl bg-slate-800 "></div>
+        <div className="absolute bottom-16 lg:bottom-24 right-3 lg:right-20   h-[77vh] w-[23rem]  border  border-transparent rounded-md shadow-4xl bg-slate-800 "></div>
       )}
     </div>
   );

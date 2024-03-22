@@ -471,8 +471,8 @@ const AddProduct = () => {
                     type={"text"}
                     id={"collections"}
                     labelStyles={"text-base text-slate-200 font-semibold my-2"}
-                    placeholder={"collections"}
-                    label={"collections"}
+                    placeholder={"Collections"}
+                    label={"Collections"}
                     value={collections}
                     handleChange={(e) => setCollections(e.target.value)}
                   />

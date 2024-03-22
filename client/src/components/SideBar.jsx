@@ -48,8 +48,8 @@ const SideBar = ({ className, setOpenModel, handleCollapse, collapse }) => {
             }}
             className={`${
               location.pathname === item.route
-                ? "bg-slate-600/70 text-white"
-                : "bg-slate-600/20 text-slate-400"
+                ? " text-blue-600"
+                : " text-slate-400"
             }`}
           />
         ))}
@@ -63,7 +63,11 @@ const SideBar = ({ className, setOpenModel, handleCollapse, collapse }) => {
             collapse ? "fa-arrow-right-long" : "fa-arrow-left-long"
           } mr-2 text-lg`}
         ></i>
-        <p className={`text-lg ${collapse ? "hidden" : "block"}`}>
+        <p
+          className={`text-lg  whitespace-nowrap ${
+            collapse ? "hidden" : "block"
+          }`}
+        >
           Collapse View
         </p>
       </div>

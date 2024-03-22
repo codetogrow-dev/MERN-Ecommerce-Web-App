@@ -13,15 +13,17 @@ const AdminRoute = ({ icon, text, handleClick, className, collapse }) => {
           </button>
         </ToolTip>
       ) : (
-        <i className={`fa-solid ${icon} mr-2 `}></i>
+        <>
+          <i className={`fa-solid ${icon} mr-2 `}></i>
+          <p
+            className={`text-lg transition-all duration-300 whitespace-nowrap  ${
+              collapse ? "hidden" : "block"
+            } `}
+          >
+            {text}
+          </p>
+        </>
       )}
-      <p
-        className={`text-lg transition-all duration-700 whitespace-nowrap  ${
-          collapse ? "hidden" : "block"
-        } `}
-      >
-        {text}
-      </p>
     </div>
   );
 };

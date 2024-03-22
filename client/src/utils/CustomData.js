@@ -39,8 +39,9 @@ export const deliveryArray = [
 ]
 export const PRODUCTS_COLUMNS = [
     {
-        Header: "ID",
-        accessor: "_id"
+        Header: "Sr. No",
+        accessor: (_, index) => index + 1,
+        disableFilters: false
     },
     {
         Header: "Product Name",
@@ -61,7 +62,6 @@ export const PRODUCTS_COLUMNS = [
     {
         Header: "Tags",
         accessor: "tags"
-
     },
     {
         Header: "Vendor",
@@ -70,5 +70,83 @@ export const PRODUCTS_COLUMNS = [
     {
         Header: "Published On",
         accessor: "createdAt"
+    }
+];
+export const CUSTOMER_ROUTES = [
+    {
+        title: "Home",
+        navigate: "/customer/home"
+    },
+    {
+        title: "Products",
+        navigate: "/customer/products"
+    },
+    {
+        title: "Wishlist",
+        navigate: "/customer/wishlist"
+    },
+    {
+        title: "Carts",
+        navigate: "/customer/carts"
+    },
+    {
+        title: "Shipping Info",
+        navigate: "/customer/shipping-info"
+    },
+    {
+        title: "Orders",
+        navigate: "/customer/orders"
+    },
+    {
+        title: "Track Order",
+        navigate: "/customer/track-order"
+    },
+    {
+        title: "Checkout",
+        navigate: "/customer/checkout"
+    },
+]
+export const WISHLIST_TABLE_DATA = [
+    {
+        header: "Picture",
+        field: "picture",
+    },
+    {
+        header: "Product Name",
+        field: "title",
+    },
+    {
+        header: "Regular Price",
+        field: "regularPrice",
+    },
+    {
+        header: "Sales Price",
+        field: "salesPrice",
+    },
+    {
+        header: "Category",
+        field: "categoryTitle",
+    },
+    {
+        header: "Stock Quantity",
+        field: "stockQuantity",
+    },
+    {
+        header: "Delete",
+        field: "icon",
+    },
+    {
+        header: "Add To Cart",
+        field: "button",
+    },
+];
+export const PRODUCT_DETAILS_DATA = [
+    {
+        title: "Description",
+        route: "description"
+    },
+    {
+        title: "Review and Rating",
+        route: "ratings"
     }
 ]

@@ -1,7 +1,7 @@
 import React from "react";
 
-const Table = () => {
+const Carts = () => {
   return <div></div>;
 };
 
-export default Table;
+export default Carts;
